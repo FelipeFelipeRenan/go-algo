@@ -1,8 +1,17 @@
 package main
 
-import "fmt"
+import (
+    "fmt"
+)
 
 func main() {
-	nums := []int{3, 5, 1, 9, 2}
-	fmt.Println(MaxElement(nums)) // Esperado: 9
+    var n int
+    fmt.Scan(&n)
+
+    nums := make([]int, n)
+    for i := 0; i < n; i++ {
+        fmt.Scan(&nums[i])
+    }
+
+    fmt.Println(MaxElement(nums))
 }
