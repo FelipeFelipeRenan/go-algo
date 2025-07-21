@@ -6,13 +6,22 @@ func TwoSumOrdered(nums []int, target int) []int {
 		return append(results, 0, 0)
 	}
 
+	left := 0
 	right := len(nums) - 1
-	for left := 0; left < right; left++ {
-		if nums[left]+nums[right] == target {
+	
+	for left < right{
+		sum := nums[left]+nums[right] 
+		if sum > target {
+			right--
+		}
+		if sum < target {
+			left++
+		}
+		if sum == target {
 			results = append(results, left, right)
 			return results
 		}
-		right--
+
 	}
 
 	return results
