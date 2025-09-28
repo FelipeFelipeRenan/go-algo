@@ -4,18 +4,8 @@ package main
 
 func FindMaxSumSubarray(values []int, k int) int {
 
-	if len(values) == 0 || k > len(values) {
+	if k > len(values) {
 		return 0
-	}
-	if len(values) == 1 {
-		return values[0]
-	}
-	if len(values) == k {
-		sum := 0
-		for _, v := range values {
-			sum = sum + v
-		}
-		return sum
 	}
 
 	sum := 0
