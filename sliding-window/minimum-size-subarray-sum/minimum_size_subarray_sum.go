@@ -6,6 +6,8 @@ func MinSubArrayLen(target int, nums []int) int {
 		return 0
 	}
 
+
+
 	size := 0
 
 	left, right := 0, 0
@@ -16,15 +18,13 @@ func MinSubArrayLen(target int, nums []int) int {
 		k += nums[right]
 
 		if k > target{
+			size = 0
 			left++
 		}
-		if target != k {
-
-			right++
-		}
-
+		size++
 		right++
 	}
+
 
 	return size
 
