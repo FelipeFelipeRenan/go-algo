@@ -2,36 +2,27 @@ package main
 
 func LengthOfLongestSubstring(s string) int {
 
-	if len(s) == 0 {
-		return 0
-	}
-
-	if len(s) == 1 {
-		return 1
+	if len(s) <= 1 {
+		return len(s)
 	}
 
 	charIndexMap := make(map[rune]int)
 
-	left, right := 0, 0
+	left := 0
 	maxLenght := 0
-	
-	for right < len(s) {
-		
-		currentChar := rune(s[right])
-		
-		lastSeenIndex , ok := charIndexMap[currentChar]
-		
-		if ok{
-			if lastSeenIndex + 1 > left{
-				
-				left = lastSeenIndex + 1
-			}
+
+	for right, currentChar := range s {
+
+		if lastSeenIndex, ok := charIndexMap[currentChar]; ok && lastSeenIndex+1 > left {
+
+			left = lastSeenIndex + 1
 		}
-		
-		currentLenght := right - left + 1
+
 		charIndexMap[currentChar] = right
-		
-		if currentLenght > maxLenght{
+
+		currentLenght := right - left + 1
+
+		if currentLenght > maxLenght {
 			maxLenght = currentLenght
 		}
 
