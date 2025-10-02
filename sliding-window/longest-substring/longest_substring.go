@@ -31,5 +31,3 @@ func LengthOfLongestSubstring(s string) int {
 
 	return maxLenght
 }
-
-// abcabb
