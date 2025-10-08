@@ -132,7 +132,7 @@ func main() {
 	fmt.Printf("O valor 14 existe na árvore? %t\n", arvore.Search(14))
 
 	fmt.Println("\n--- Demonstração das Travessias ---")
-	
+
 	arvore.InOrderTraverse()
 	arvore.PreOrderTraverse()
 	arvore.PostOrderTraverse()
