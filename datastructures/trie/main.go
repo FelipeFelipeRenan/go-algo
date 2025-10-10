@@ -2,7 +2,6 @@ package main
 
 import "fmt"
 
-
 const AlphabetSize = 26 // Para este exemplo, usaremos apenas a-z minúsculo.
 
 // TrieNode representa um nó na nossa Trie.
@@ -83,6 +82,71 @@ func (t *Trie) StartsWith(prefix string) bool {
 	return true
 }
 
+// Remover inicia o processo de remoção de uma palavra.
+func (t *Trie) Remove(word string) {
+	fmt.Printf("\nTentando remover '%s'", word)
+	t.removeRecursive(t.Root, word, 0)
+}
+
+// removerRecursivo faz a remoção de forma recursiva.
+// Retorna 'true' se o nó pai deve remover o ponteiro para o nó atual.
+func (t *Trie) removeRecursive(currentNode *TrieNode, word string, depth int) bool {
+	// Caso base: se o nó é nulo, não há nada a fazer.
+	if currentNode == nil {
+		return false
+	}
+	// Caso recursivo: chegamos ao final da palavra.
+	if depth == len(word) {
+		// Se o nó marca um fim de palavra, desmarcamos.
+		if currentNode.WordEnd {
+			currentNode.WordEnd = false
+			// Se este nó não tiver mais filhos, ele se tornou inútil
+			// e pode ser removido pelo seu pai.
+			return len(currentNode.Childs) == 0
+		}
+		// Se não era um fim de palavra, não há nada a remover.
+		return false
+	}
+
+	// Passo recursivo: desce na árvore.
+	char := rune(word[depth])
+	if shouldRemoveChild := t.removeRecursive(currentNode.Childs[char], word, depth+1); shouldRemoveChild {
+		// Se a chamada recursiva disse para remover o filho, nós o removemos.
+		delete(currentNode.Childs, char)
+		// E verificamos se o nó atual também se tornou inútil.
+		return !currentNode.WordEnd && len(currentNode.Childs) == 0
+	}
+	return false
+}
+
+func (t *Trie) FindByPrefix(prefix string) []string {
+
+	currentNode := t.Root
+
+	for _, char := range prefix {
+		if _, exists := currentNode.Childs[char]; !exists {
+
+			return []string{}
+		}
+		currentNode = currentNode.Childs[char]
+	}
+
+	var wordsFound []string
+	t.collectWords(currentNode, prefix, &wordsFound)
+	return wordsFound
+}
+
+func (t *Trie) collectWords(currentNode *TrieNode, currentPrefix string, words *[]string) {
+
+	if currentNode.WordEnd {
+		*words = append(*words, currentPrefix)
+	}
+
+	for char, childNode := range currentNode.Childs {
+		t.collectWords(childNode, currentPrefix+string(char), words)
+	}
+}
+
 // --- Função Principal ---
 func main() {
 	minhaTrie := NewTrie()
@@ -101,4 +165,23 @@ func main() {
 	fmt.Printf("Existe alguma palavra com o prefixo 'cart'? %t\n", minhaTrie.StartsWith("cart"))
 	fmt.Printf("Existe alguma palavra com o prefixo 'carr'? %t\n", minhaTrie.StartsWith("carr"))
 	fmt.Printf("Existe alguma palavra com o prefixo 'gato'? %t\n", minhaTrie.StartsWith("gato"))
+
+	fmt.Println("\n--- Testando o Auto-Completar ---")
+	prefixo := "cart"
+	sugestoes := minhaTrie.FindByPrefix(prefixo)
+	fmt.Printf("Palavras que começam com '%s': %v\n", prefixo, sugestoes)
+
+	prefixo2 := "casa"
+	sugestoes2 := minhaTrie.FindByPrefix(prefixo2)
+	fmt.Printf("Palavras que começam com '%s': %v\n", prefixo2, sugestoes2)
+
+	fmt.Println("\n--- Testando a Remoção ---")
+	fmt.Printf("A palavra 'carteiro' existe? %t\n", minhaTrie.Search("carteiro"))
+	minhaTrie.Remove("carteiro")
+	fmt.Printf("A palavra 'carteiro' existe agora? %t\n", minhaTrie.Search("carteiro"))
+	fmt.Printf("A palavra 'carta' ainda existe? %t\n", minhaTrie.Search("carta")) // Deve ser true
+
+	sugestoesAposRemocao := minhaTrie.FindByPrefix(prefixo)
+	fmt.Printf("Sugestões para '%s' após remoção: %v\n", prefixo, sugestoesAposRemocao)
+
 }
