@@ -119,29 +119,32 @@ func (t *Trie) removeRecursive(currentNode *TrieNode, word string, depth int) bo
 	return false
 }
 
+// EncontrarPorPrefixo retorna um slice com todas as palavras que começam com o prefixo.
 func (t *Trie) FindByPrefix(prefix string) []string {
 
 	currentNode := t.Root
 
+	// 1. Navega até o final do prefixo
 	for _, char := range prefix {
 		if _, exists := currentNode.Childs[char]; !exists {
-
+			// Se o prefixo não existe, não há palavras.
 			return []string{}
 		}
 		currentNode = currentNode.Childs[char]
 	}
-
+	// 2. Coleta todas as palavras daquele ponto em diante
 	var wordsFound []string
 	t.collectWords(currentNode, prefix, &wordsFound)
 	return wordsFound
 }
 
+// coletarPalavras é uma função DFS recursiva para encontrar as palavras.
 func (t *Trie) collectWords(currentNode *TrieNode, currentPrefix string, words *[]string) {
-
+	// Se o nó atual é um fim de palavra, adicionamos à nossa lista.
 	if currentNode.WordEnd {
 		*words = append(*words, currentPrefix)
 	}
-
+	// Para cada filho, continua a busca recursivamente.
 	for char, childNode := range currentNode.Childs {
 		t.collectWords(childNode, currentPrefix+string(char), words)
 	}
