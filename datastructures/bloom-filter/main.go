@@ -20,6 +20,7 @@ func NewBloomFilter(m, k int) *BloomFilter {
 	}
 }
 
+
 func (bf *BloomFilter) hash(item string) []int {
 
 	hashes := make([]int, bf.k)
@@ -32,27 +33,25 @@ func (bf *BloomFilter) hash(item string) []int {
 	h2.Write([]byte(item))
 	hash2 := int(h2.Sum32())
 
-
 	for i := 0; i < bf.k; i++ {
-		
+
 		combinedHash := hash1 + i*hash2
 
-		hashes[i] = (combinedHash & 0x7fffffff) % bf.m
+		hashes[i] = (combinedHash &  0x7fffffff) % bf.m
 	}
 
 	return hashes
 }
 
-
-func (bf *BloomFilter) Insert(item string)  {
+func (bf *BloomFilter) Insert(item string) {
 	fmt.Printf("Inserindo '%s'...\n", item)
 	hashes := bf.hash(item)
-	for _, h := range hashes{
+	for _, h := range hashes {
 		bf.bits[h] = true
 	}
 }
 
-func (bf *BloomFilter) Search(item string) bool  {
+func (bf *BloomFilter) Search(item string) bool {
 	hashes := bf.hash(item)
 	for _, h := range hashes {
 
@@ -73,8 +72,8 @@ func main() {
 	filtro.Insert("laranja")
 
 	fmt.Println("\n--- Verificando a existência ---")
-	fmt.Printf("A fruta 'goiaba' existe? %t\n", filtro.Search("goiaba"))     // True (Certeza)
-	fmt.Printf("A fruta 'laranja' existe? %t\n", filtro.Search("laranja"))   // True (Certeza)
+	fmt.Printf("A fruta 'goiaba' existe? %t\n", filtro.Search("goiaba"))   // True (Certeza)
+	fmt.Printf("A fruta 'laranja' existe? %t\n", filtro.Search("laranja")) // True (Certeza)
 	fmt.Printf("A fruta 'morango' existe? %t\n", filtro.Search("morango")) // False (Certeza)
 
 	// 'abacaxi' não foi inserido, mas pode dar um falso positivo
