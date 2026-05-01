@@ -54,7 +54,7 @@ func TestNumIslands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NumIslands(tt.grid)
+			got := NumberOfIslands(tt.grid)
 			if got != tt.expected {
 				t.Errorf("NumIslands() = %v, esperado %v", got, tt.expected)
 			}
